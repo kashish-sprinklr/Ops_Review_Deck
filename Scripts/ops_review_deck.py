@@ -8,6 +8,7 @@ from pptx.enum.chart import XL_LEGEND_POSITION
 from pptx.enum.chart import XL_LABEL_POSITION
 from pptx.enum.chart import XL_TICK_LABEL_POSITION
 from pptx.enum.chart import XL_TICK_MARK
+from pathlib import Path
 import os
 import time
 import pandas as pd
@@ -399,7 +400,6 @@ def calculate_time(func):
 
 
 def create_presentation_with_branding_image(image_paths, n_slide):
-    base_dir = "D:/Sprinklr/Documents/C&T Ops Review Deck/Deck Project - Charm/Images/"
     prs = Presentation()
     prs.slide_width = Inches(10)
     prs.slide_height = Inches(6)
@@ -408,14 +408,11 @@ def create_presentation_with_branding_image(image_paths, n_slide):
         slide = prs.slides.add_slide(blank_slide_layout)
         left = top = 0
         if i == 0:
-            slide.shapes.add_picture(base_dir + image_paths[0], left, top, width=prs.slide_width,
-                                     height=prs.slide_height)
+            slide.shapes.add_picture(image_paths[0], left, top, width=prs.slide_width, height=prs.slide_height)
         elif i == 1:
-            slide.shapes.add_picture(base_dir + image_paths[1], left, top, width=prs.slide_width,
-                                     height=prs.slide_height)
+            slide.shapes.add_picture(image_paths[1], left, top, width=prs.slide_width, height=prs.slide_height)
         else:
-            slide.shapes.add_picture(base_dir + image_paths[2], left, top, width=prs.slide_width,
-                                     height=prs.slide_height)
+            slide.shapes.add_picture(image_paths[2], left, top, width=prs.slide_width, height=prs.slide_height)
     return prs
 
 
@@ -492,23 +489,26 @@ def create_ops_review_presentation(images, df_fdict, ehi_db, ppt_path=None):
     return None
 
 
-deck_path = "D:/Sprinklr/Documents/C&T Ops Review Deck/Deck Project - Charm/Decks/"
-files_path = "D:/Sprinklr/Documents/C&T Ops Review Deck/Deck Project - Charm/Files/"
-image_names = ["title_page.png", "branding_page.png", "content_page.png"]
+parent_dir = Path(os.getcwd()).parent
+deck_path = os.path.join(parent_dir, "Decks")
+files_path = os.path.join(parent_dir, "Files")
+images_path = os.path.join(parent_dir, "Images")
+image_names = [os.path.join(images_path, "title_page.png"), os.path.join(images_path, "branding_page.png"),
+               os.path.join(images_path, "content_page.png")]
 
 db_dict = get_dataframe_dict(files_path, ["Q1 FY20", "Q2 FY20", "Q3 FY20", "Q4 FY20", "Q1 FY21"])
 
 uid = "53HWTWIBW"
 db_fdict = filter_dataframe_dict_on_uid(uid, db_dict)
-db = read_ehi_data(files_path + "ehi_example_data_fozia.xlsx")
+db = read_ehi_data(os.path.join(files_path, "ehi_example_data_fozia.xlsx"))
 create_ops_review_presentation(image_names, db_fdict, db, deck_path)
 
 uid = "LA0UT4HLD"
 db_fdict = filter_dataframe_dict_on_uid(uid, db_dict)
-db = read_ehi_data(files_path + "ehi_example_data_hadrian.xlsx")
+db = read_ehi_data(os.path.join(files_path, "ehi_example_data_hadrian.xlsx"))
 create_ops_review_presentation(image_names, db_fdict, db, deck_path)
 
 uid = "ZJG9NQVX8"
 db_fdict = filter_dataframe_dict_on_uid(uid, db_dict)
-db = read_ehi_data(files_path + "ehi_example_data_heidi.xlsx")
+db = read_ehi_data(os.path.join(files_path, "ehi_example_data_heidi.xlsx"))
 create_ops_review_presentation(image_names, db_fdict, db, deck_path)
